@@ -1,0 +1,44 @@
+name: disk
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths: ["disk/**", ".github/workflows/disk.yml"]
+
+jobs:
+  build:
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+      packages: read
+    strategy:
+      fail-fast: false
+      matrix:
+        type: [qcow2, anaconda-iso]
+
+    steps:
+      - uses: ublue-os/remove-unwanted-software@695eb75bc387dbcd9685a8e72d23439d8686cba6
+        with:
+          remove-codeql: true
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - run: echo "OWNER=$(id -u):$(id -g)" >> "$GITHUB_ENV"
+
+      - id: build
+        uses: osbuild/bootc-image-builder-action@8661cd3832544ad68c12dcde8681b13ab0f56a8d # main
+        with:
+          builder-image: quay.io/centos-bootc/bootc-image-builder:latest
+          config-file: disk/${{ matrix.type == 'qcow2' && 'vm' || 'iso' }}.toml
+          image: ghcr.io/ntedvs/leasy:latest
+          types: ${{ matrix.type }}
+          chown: ${{ env.OWNER }}
+          additional-args: --use-librepo=True
+
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: leasy-${{ matrix.type }}
+          path: ${{ steps.build.outputs.output-directory }}
+          if-no-files-found: error
+          compression-level: 0

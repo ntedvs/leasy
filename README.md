@@ -4,28 +4,28 @@ Linux, minus the friction. Atomic, Mac-like, terminal-optional.
 
 Aurora (Fedora Atomic, KDE) + bootc. One image, signed, shipped daily.
 
-## Layout
-
 ```
-Containerfile    base + build
-build_files/     build.sh (packages, units)
-system_files/    overlaid onto /
-disk_config/     qcow2 + ISO recipes
-```
-
-## Use
-
-```sh
-just build       # image
-just build-vm    # qcow2
-just run-vm      # boot it
-just build-iso   # installer
+leasy.containerfile   base + build
+build.sh              packages, units
+root/                 overlaid onto /
+disk/                 vm + iso recipes
+.github/workflows/    image (daily), disk (on demand)
 ```
 
-Existing Atomic system:
+## Install
+
+Actions -> disk -> Run. Grab `leasy-anaconda-iso` or `leasy-qcow2`.
+
+Or, from any Atomic system:
 
 ```sh
 sudo bootc switch --enforce-container-sigpolicy ghcr.io/ntedvs/leasy:latest
+```
+
+## Build locally
+
+```sh
+podman build -f leasy.containerfile -t leasy .
 ```
 
 ## Signing

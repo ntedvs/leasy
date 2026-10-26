@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
-cp -a /ctx/system_files/. /
+cp -a /ctx/root/. /
 rm -f /.gitkeep
 
 # dnf5 install -y <pkg>

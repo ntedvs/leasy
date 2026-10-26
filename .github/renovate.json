@@ -1,0 +1,22 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices"],
+  "rebaseWhen": "never",
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["pin", "pinDigest"],
+      "automerge": true
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/ublue-os/aurora"],
+      "pinDigests": false
+    },
+    {
+      "matchFileNames": [".github/workflows/**"],
+      "matchDepTypes": ["container"],
+      "matchUpdateTypes": ["digest", "pinDigest", "pin"],
+      "enabled": false
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 FROM scratch AS ctx
-COPY build_files /
-COPY system_files /system_files
+COPY build.sh /
+COPY root /root
 
 FROM ghcr.io/ublue-os/aurora:stable
 
