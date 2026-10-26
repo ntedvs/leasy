@@ -52,11 +52,17 @@ jobs:
             --rootfs /rpm-ostree \
             --output "containers-storage:[overlay@/run/host-container-storage+/run/rpm-ostree-storage]localhost/leasy"
 
+      - uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
+        if: env.PUBLISH == 'true'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Push
         id: push
         if: env.PUBLISH == 'true'
         run: |
-          podman login ghcr.io -u "${{ github.actor }}" -p "${{ secrets.GITHUB_TOKEN }}"
           for tag in latest "$VERSION"; do
             podman push --digestfile=digest leasy "$IMAGE:$tag"
           done
